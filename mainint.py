@@ -14,68 +14,56 @@ class WidgetGallery(QDialog):
 
         self.originalPalette = QApplication.palette()
 
-        styleComboBox = QComboBox()
-        styleComboBox.addItems(QStyleFactory.keys())
+        #styleComboBox = QComboBox()
+        #styleComboBox.addItems(QStyleFactory.keys())
 
-        styleLabel = QLabel("&Style:")
-        styleLabel.setBuddy(styleComboBox)
+        #styleLabel = QLabel("&Style:")
+        #styleLabel.setBuddy(styleComboBox)
 
-     #   self.useStylePaletteCheckBox = QCheckBox("&Use style's standard palette")
-      #  self.useStylePaletteCheckBox.setChecked(True)
 
-        disableWidgetsCheckBox = QCheckBox("&Disable widgets") #asigna para deshabilitar los widgets
+        #disableWidgetsCheckBox = QCheckBox("&Disable widgets") #asigna para deshabilitar los widgets
 
         self.createTopLeftGroupBox() #grupo1 
         self.createTopRightGroupBox() #grupo2
-       # self.createBottomLeftTabWidget() #grupo 3
-       # self.createBottomRightGroupBox()
-        #self.createProgressBar()
 
-      #  styleComboBox.activated[str].connect(self.changeStyle)
-        #self.useStylePaletteCheckBox.toggled.connect(self.changePalette)
+        satComboBox = QComboBox()
+     
+        satLabel = QLabel("&Satelite:")
+        satLabel.setBuddy(satComboBox)
+
+      #  styleComboBox.activated[str].connect(self.changeStyle)        # widget de barra
+        
         #deshabilita los widgets
-        disableWidgetsCheckBox.toggled.connect(self.topLeftGroupBox.setDisabled)
-        disableWidgetsCheckBox.toggled.connect(self.topRightGroupBox.setDisabled)
-        #disableWidgetsCheckBox.toggled.connect(self.bottomLeftTabWidget.setDisabled)
-        #disableWidgetsCheckBox.toggled.connect(self.bottomRightGroupBox.setDisabled)
+        #disableWidgetsCheckBox.toggled.connect(self.topLeftGroupBox.setDisabled)
+        #disableWidgetsCheckBox.toggled.connect(self.topRightGroupBox.setDisabled)
+      
 
         topLayout = QHBoxLayout()
-        topLayout.addWidget(styleLabel)
-        #topLayout.addWidget(styleComboBox)
+        #topLayout.addWidget(styleLabel)
+        topLayout.addWidget(satLabel)
+        topLayout.addWidget(satComboBox)
+        #topLayout.addWidget(styleComboBox)   # widget de barra
         topLayout.addStretch(1)
-        #topLayout.addWidget(self.useStylePaletteCheckBox)
-        topLayout.addWidget(disableWidgetsCheckBox)
+        #topLayout.addWidget(self.useStylePaletteCheckBox)     # widget de barra
+        #topLayout.addWidget(disableWidgetsCheckBox)
 
         mainLayout = QGridLayout()
-        mainLayout.addLayout(topLayout, 0, 0, 1, 2)
+        mainLayout.addLayout(topLayout, 0, 0, 1, 2) 
         mainLayout.addWidget(self.topLeftGroupBox, 1, 0)
-        mainLayout.addWidget(self.topRightGroupBox, 1, 1)
-        #mainLayout.addWidget(self.bottomLeftTabWidget, 2, 0)
-        #mainLayout.addWidget(self.bottomRightGroupBox, 2, 1)
-        #mainLayout.addWidget(self.progressBar, 3, 0, 1, 2)
+        mainLayout.addWidget(self.topRightGroupBox, 1, 1) 
         mainLayout.setRowStretch(1, 1)
         mainLayout.setRowStretch(2, 1)
-        mainLayout.setColumnStretch(0, 1)
-        mainLayout.setColumnStretch(1, 1)
+        mainLayout.setColumnStretch(0, 2)
+        mainLayout.setColumnStretch(1, 2)
         self.setLayout(mainLayout)
 
-        self.setWindowTitle("Styles")
-        self.changeStyle('Fusion')
+        self.setWindowTitle("GUI") # nombre de la ventana
+        self.changeStyle('Fusion') # estilo de la interfaz
 
-    def changeStyle(self, styleName):
+    def changeStyle(self, styleName):#cambia de estilo con la barra de opciones
        QApplication.setStyle(QStyleFactory.create(styleName))
-        #self.changePalette()
 
-  #  def changePalette(self):
-   #     if (self.useStylePaletteCheckBox.isChecked()):
-    #        QApplication.setPalette(QApplication.style().standardPalette())
-     #   else:
-      #      QApplication.setPalette(self.originalPalette)
 
-    #def advanceProgressBar(self):
-    #    curVal = self.progressBar.value()
-    #    maxVal = self.progressBar.maximum()
-    #    self.progressBar.setValue(curVal + (maxVal - curVal) / 100)
 
     def createTopLeftGroupBox(self):
         self.topLeftGroupBox = QGroupBox("Group 1")
@@ -100,8 +88,16 @@ class WidgetGallery(QDialog):
     def createTopRightGroupBox(self):
         self.topRightGroupBox = QGroupBox("Group 2")
 
-        defaultPushButton = QPushButton("Default Push Button")
-        defaultPushButton.setDefault(True)
+        spinBox1 = QSpinBox(self.topRightGroupBox)
+        spinBox1.setValue(50)
+        spinBox2 = QSpinBox(self.topRightGroupBox)
+        spinBox2.setValue(60)
+        disableButton1 = QRadioButton("&Manual") #asigna para deshabilitar los widget
+        disableButton2 = QRadioButton("&Automático") #asigna para deshabilitar los widget
+        disableButton1.setChecked(True)
+        #if disableButton2.isChecked == True:
+        disableButton2.toggled.connect(spinBox1.setDisabled)
+        disableButton2.toggled.connect(spinBox2.setDisabled)
 
         togglePushButton = QPushButton("Toggle Push Button")
         togglePushButton.setCheckable(True)
@@ -110,86 +106,20 @@ class WidgetGallery(QDialog):
         flatPushButton = QPushButton("Flat Push Button")
         flatPushButton.setFlat(True)
 
-        layout = QVBoxLayout()
-        layout.addWidget(defaultPushButton)
-        layout.addWidget(togglePushButton)
-        layout.addWidget(flatPushButton)
-        layout.addStretch(1)
+        layout = QGridLayout()
+        #layout.addWidget(defaultPushButton)
+        layout.addWidget(spinBox1,0,0,1,1)
+        layout.addWidget(spinBox2,0,1,1,1)
+        layout.addWidget(disableButton1,0,2,1,1)
+        layout.addWidget(disableButton2,1,2,1,1)
+        layout.addWidget(togglePushButton,2,0)
+        layout.addWidget(flatPushButton,3,0)
+        layout.setRowStretch(3,1)
+        layout.setColumnStretch(0,2)
         self.topRightGroupBox.setLayout(layout)
 
-    #def createBottomLeftTabWidget(self):
-    #    self.bottomLeftTabWidget = QTabWidget()
-    #    self.bottomLeftTabWidget.setSizePolicy(QSizePolicy.Preferred,
-    #            QSizePolicy.Ignored)
-
-     #   tab1 = QWidget()
-     #   tableWidget = QTableWidget(10, 10)
-
-      #  tab1hbox = QHBoxLayout()
-      #  tab1hbox.setContentsMargins(5, 5, 5, 5)
-      #  tab1hbox.addWidget(tableWidget)
-      #  tab1.setLayout(tab1hbox)
-
-      #  tab2 = QWidget()
-      #  textEdit = QTextEdit()
-
-      #  textEdit.setPlainText("Twinkle, twinkle, little star,\n"
-      #                        "How I wonder what you are.\n" 
-      #                        "Up above the world so high,\n"
-      #                        "Like a diamond in the sky.\n"
-      #                        "Twinkle, twinkle, little star,\n" 
-      #                        "How I wonder what you are!\n")
-
-       # tab2hbox = QHBoxLayout()
-       # tab2hbox.setContentsMargins(5, 5, 5, 5)
-       # tab2hbox.addWidget(textEdit)
-       # tab2.setLayout(tab2hbox)
-
-      #  self.bottomLeftTabWidget.addTab(tab1, "&Table")
-       # self.bottomLeftTabWidget.addTab(tab2, "Text &Edit")
-
-#    def createBottomRightGroupBox(self):
- #       self.bottomRightGroupBox = QGroupBox("Group 3")
-  #      self.bottomRightGroupBox.setCheckable(True)
-   #     self.bottomRightGroupBox.setChecked(True)
-
-    #    lineEdit = QLineEdit('s3cRe7')
-     #   lineEdit.setEchoMode(QLineEdit.Password)
-
-      #  spinBox = QSpinBox(self.bottomRightGroupBox)
-      #  spinBox.setValue(50)
-
-       # dateTimeEdit = QDateTimeEdit(self.bottomRightGroupBox)
-       # dateTimeEdit.setDateTime(QDateTime.currentDateTime())
-
-      #  slider = QSlider(Qt.Horizontal, self.bottomRightGroupBox)
-      #  slider.setValue(40)
-
-       # scrollBar = QScrollBar(Qt.Horizontal, self.bottomRightGroupBox)
-      #  scrollBar.setValue(60)
-
-       # dial = QDial(self.bottomRightGroupBox)
-       # dial.setValue(30)
-       # dial.setNotchesVisible(True)
-
-        #layout = QGridLayout()
-        #layout.addWidget(lineEdit, 0, 0, 1, 2)
-        #layout.addWidget(spinBox, 1, 0, 1, 2)
-        #layout.addWidget(dateTimeEdit, 2, 0, 1, 2)
-        #layout.addWidget(slider, 3, 0)
-        #layout.addWidget(scrollBar, 4, 0)
-        #layout.addWidget(dial, 3, 1, 2, 1)
-        #layout.setRowStretch(5, 1)
-        #self.bottomRightGroupBox.setLayout(layout)
-
-   # def createProgressBar(self):
-    #    self.progressBar = QProgressBar()
-     #   self.progressBar.setRange(0, 10000)
-      #  self.progressBar.setValue(0)
-
-#        timer = QTimer(self)
- #       timer.timeout.connect(self.advanceProgressBar)
-  #      timer.start(1000)
+        
+  
 
 
 if __name__ == '__main__':
